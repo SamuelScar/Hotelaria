@@ -10,10 +10,13 @@ class Hospede { // arrumar nome do hospede
     private Date [] departure_dates =  new Date[TAM_DATAS];
     private int number_dates;
 
-    public Hospede(String name, int phone){
+    public void cadastraHospede(String name, int phone, int cod){
 
+        this.cod = cod;
         this.name = name;
         this.phone = phone;
 
     }
+
+
 }
