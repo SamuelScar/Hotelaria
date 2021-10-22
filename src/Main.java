@@ -1,4 +1,7 @@
+import java.text.ParseException;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.Date;
 
 
@@ -7,9 +10,9 @@ public class Main {
     final static int NUM_HOSP = 100;
     private static Hospede[] hospedes = new Hospede[NUM_HOSP];
     private static int numHospedes = 0;
-    private static Render render = new Render();
+    private static SimpleDateFormat simpleDate = new SimpleDateFormat("dd/MM/yyyy");
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws ParseException {
 
         int escolha = 1;
 
@@ -21,6 +24,10 @@ public class Main {
             case 1:
                 cadastrarHospede();
             break;
+
+            case 2:
+                checkIn();
+            break;
         }
     }
 
@@ -28,8 +35,7 @@ public class Main {
 
         int cod, numberPhone;
         String name;
-
-        render.renderCadastrarHospede();
+        System.out.println("CADASTRO DE HOSPEDE");
         System.out.println("Codigo:");
         cod = Integer.parseInt(Console.readLine());
 
@@ -43,11 +49,11 @@ public class Main {
         numHospedes++;
     }
 
-    public static void checkIn(){
+    public static void checkIn() throws ParseException {
 
-        int codClient, codApartament, numberHospedes, previsãoSaida;
-        String auxDateEntry, auxDateDeparture;
-        //Date dateEntry = new Date;
+        int codClient, codApartament, numberHospedes, previsaoSaida, i=0;
+        String auxDate;
+        Date dateEntry, dateOut = new Date();
 
         System.out.println("Codigo do Cliente: ");
         codClient = Integer.parseInt(Console.readLine());
@@ -56,15 +62,17 @@ public class Main {
         codApartament = Integer.parseInt(Console.readLine());
 
         System.out.println("Data de entrada (format _/_/_): ");
-        auxDateEntry = Console.readLine();
+        auxDate = Console.readLine();
+        dateEntry = simpleDate.parse(auxDate);
 
         System.out.println("Data de saida (format _/_/_): ");
-        auxDateDeparture = Console.readLine();
+        auxDate = Console.readLine();
+        dateOut = simpleDate.parse(auxDate);
 
-        validarCheckIn();
+        validarCheckIn(codClient,codApartament,dateEntry,dateOut);
     }
 
-    public static void validarCheckIn(){
+    public static void validarCheckIn(int codClient, int codApartament, Date dateEntry, Date dateOut){
 
         //fazer validação dos dados para executar o checkIn
 
