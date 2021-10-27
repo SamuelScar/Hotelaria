@@ -49,13 +49,14 @@ public class Apartment {
     public boolean validaData(Date dateEntry,Date dateOut) {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        boolean validade = false;
+        boolean validade = true;
 
         // Formata data de entrada
         String auxDate = dateFormat.format(dateEntry);
         dateEntry = dateFormat.parse(auxDate, position);
 
         // Formata data de saida
+        position.setIndex(0);
         auxDate = dateFormat.format(dateOut);
         dateOut = dateFormat.parse(auxDate, position);
 
@@ -64,7 +65,7 @@ public class Apartment {
         auxDate = dateFormat.format(dataAtual);
         dataAtual = dateFormat.parse(auxDate, position);
 
-
+        // Verifica a possibilidade da data
         for (int i = 0; i < numDates; i++) {
 
             if (!(dateEntry.before(dataAtual) || dateOut.before(dataAtual))) {
@@ -102,7 +103,6 @@ public class Apartment {
                 return validade;  // se a data de entrada ou saida ja passou da data atual
             }
         }
-        this.occupation = true;
         return validade;
     }
 
@@ -113,5 +113,14 @@ public class Apartment {
         Arrays.sort(entryDates);
         Arrays.sort(outDates);
 
+    }
+
+    public boolean validaHospedes(int numHopedes){
+
+        if(numHopedes <= this.capacity+1){
+            return true;
+        }else {
+            return false;
+        }
     }
 }

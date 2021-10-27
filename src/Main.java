@@ -2,6 +2,7 @@ import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.text.DateFormat;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 
@@ -9,15 +10,20 @@ public class Main {
 
     final static int NUM_HOSP = 100;
     final static int NUM_APART = 10;
+
     private static Hospede[] hospedes = new Hospede[NUM_HOSP];
     private static int numHospedes = 0;
-    private static SimpleDateFormat simpleDate = new SimpleDateFormat("dd/MM/yyyy");
+
     private static Apartment[] apartments = new Apartment[NUM_APART];
     private static int numApartments = 0;
+
+    private static SimpleDateFormat simpleDate = new SimpleDateFormat("dd/MM/yyyy");
     private static ParsePosition position = new ParsePosition(0);
+
 
     public static void main(String[] args) throws ParseException {
 
+        criaApartamentos();
         int escolha = 1;
 
         System.out.println("1 - Cadastrar Cliente");
@@ -74,19 +80,32 @@ public class Main {
         String auxDateOut = Console.readLine();
         Date dateOut = simpleDate.parse(auxDateOut, position);
 
-        validarCheckIn(codClient,codApartament,dateEntry,dateOut);
+        System.out.println("Numero de hospedes: ");
+        numberHospedes = Integer.parseInt(Console.readLine());
+
+        // Falta validar o periodo minimo de 1 dia
+        validarCheckIn(codClient,codApartament,dateEntry,dateOut,numberHospedes);
     }
 
-    public static void validarCheckIn(int codClient, int codApartament, Date dateEntry, Date dateOut){
+    public static boolean validarCheckIn(int codClient, int codApartament, Date dateEntry, Date dateOut, int numberHospedes){
+        boolean validade = false;
 
-        if(apartments[codApartament] == NULL){
-            //apartments[codApartament]
-        }
-
-        if(apartments[codApartament].validaData(dateEntry,dateOut)){
+        if(apartments[codApartament].validaData(dateEntry,dateOut) == true && apartments[codApartament].validaHospedes(numberHospedes) == true){
             System.out.println("Validação confirmada");
+            validade = true;
         }else{
             System.out.println("Validação negada");
+            validade = false;
+        }
+        return validade;
+    }
+
+    public static void criaApartamentos(){
+
+        for(int i = 0; i < NUM_APART; i++){
+
+            apartments[i] = new Apartment();
+
         }
     }
 }
