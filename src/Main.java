@@ -58,7 +58,7 @@ public class Main {
         int codClient, codApartament, numberHospedes, previsaoSaida, i=0;
         boolean validade = false;
         String auxDate;
-        Date dateEntry, dateOut = new Date();
+        Date dateEntry;
 
         System.out.println("Codigo do Cliente: ");
         codClient = Integer.parseInt(Console.readLine());
@@ -70,24 +70,20 @@ public class Main {
         auxDate = Console.readLine();
         dateEntry = simpleDate.parse(auxDate,position);
         System.out.println(dateEntry);
+
         System.out.println("Data de saida (format _/_/_): ");
         auxDate = Console.readLine();
-        dateOut = simpleDate.parse(auxDate,position);
+        Date dateOut = simpleDate.parse(auxDate, position);
 
-        validade = validarCheckIn(codClient,codApartament,dateEntry,dateOut);
+        validarCheckIn(codClient,codApartament,dateEntry,dateOut);
     }
 
-    public static boolean validarCheckIn(int codClient, int codApartament, Date dateEntry, Date dateOut){
+    public static void validarCheckIn(int codClient, int codApartament, Date dateEntry, Date dateOut){
 
-        //fazer validação dos dados para executar o checkIn
-
-        boolean validade = false;
-
-        if(!apartments[codApartament].validaData(dateEntry,dateOut)){
-            return validade;
+        if(apartments[codApartament].validaData(dateEntry,dateOut)){
+            System.out.println("Validação confirmada");
+        }else{
+            System.out.println("Validação negada");
         }
-        //criar os outros metodos de validação
-
-        return validade;
     }
 }
