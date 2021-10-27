@@ -2,20 +2,48 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Random;
 
 public class Apartment {
 
     final int TAM_DATAS = 100;
+    private int vrDiaria;
     private int cod;
-    private String tip;
+    private int tip;
     private int capacity;
     private boolean occupation;
     Date [] entryDates =  new Date[TAM_DATAS];
     Date [] outDates =  new Date[TAM_DATAS];
     private int numDates = 0;
     private ParsePosition position = new ParsePosition(0);
+    private Random aleatorio = new Random();
+
     public Apartment(){
 
+        this.tip = aleatorio.nextInt(4) + 1;
+        this.occupation = false;
+
+        switch (this.tip){
+            case 1:
+                this.capacity = 2;
+                this.vrDiaria = 268;
+            break;
+
+            case 2:
+                this.capacity = 4;
+                this.vrDiaria = 315;
+            break;
+
+            case 3:
+                this.capacity = 4;
+                this.vrDiaria = 353;
+            break;
+
+            case 4:
+                this.capacity = 2;
+                this.vrDiaria = 498;
+            break;
+        }
     }
 
     public boolean validaData(Date dateEntry,Date dateOut) {
@@ -74,6 +102,7 @@ public class Apartment {
                 return validade;  // se a data de entrada ou saida ja passou da data atual
             }
         }
+        this.occupation = true;
         return validade;
     }
 

@@ -56,9 +56,6 @@ public class Main {
     public static void checkIn(){
 
         int codClient, codApartament, numberHospedes, previsaoSaida, i=0;
-        boolean validade = false;
-        String auxDate;
-        Date dateEntry;
 
         System.out.println("Codigo do Cliente: ");
         codClient = Integer.parseInt(Console.readLine());
@@ -67,18 +64,24 @@ public class Main {
         codApartament = Integer.parseInt(Console.readLine());
 
         System.out.println("Data de entrada (format _/_/_): ");
-        auxDate = Console.readLine();
-        dateEntry = simpleDate.parse(auxDate,position);
+        String auxDateEntry = Console.readLine();
+        Date dateEntry = simpleDate.parse(auxDateEntry,position);
+        position.setIndex(0);
         System.out.println(dateEntry);
 
+
         System.out.println("Data de saida (format _/_/_): ");
-        auxDate = Console.readLine();
-        Date dateOut = simpleDate.parse(auxDate, position);
+        String auxDateOut = Console.readLine();
+        Date dateOut = simpleDate.parse(auxDateOut, position);
 
         validarCheckIn(codClient,codApartament,dateEntry,dateOut);
     }
 
     public static void validarCheckIn(int codClient, int codApartament, Date dateEntry, Date dateOut){
+
+        if(apartments[codApartament] == NULL){
+            //apartments[codApartament]
+        }
 
         if(apartments[codApartament].validaData(dateEntry,dateOut)){
             System.out.println("Validação confirmada");
