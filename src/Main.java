@@ -1,8 +1,11 @@
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.Period;
+
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.text.DateFormat;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 
@@ -20,31 +23,47 @@ public class Main {
     private static SimpleDateFormat simpleDate = new SimpleDateFormat("dd/MM/yyyy");
     private static ParsePosition position = new ParsePosition(0);
 
-
+//-----------------------------------------------------------MAIN----------------------------------------------------//
     public static void main(String[] args) throws ParseException {
 
         criaApartamentos();
-        int escolha = 1;
 
-        System.out.println("1 - Cadastrar Cliente");
-        System.out.println("2 - Check In");
-        escolha = Integer.parseInt(Console.readLine());
+        boolean sair = false;
 
-        switch (escolha){
-            case 1:
-                cadastrarHospede();
-            break;
+        while(sair == false) {
+            int escolha = 1;
 
-            case 2:
-                checkIn();
-            break;
+            System.out.println("1 - Cadastrar Cliente");
+            System.out.println("2 - Check In");
+            System.out.println("3 - Check Out");
+
+            escolha = Integer.parseInt(Console.readLine());
+
+            switch (escolha) {
+                case 1:
+                    cadastrarHospede();
+                    break;
+
+                case 2:
+                    checkIn();
+                break;
+
+                case 3:
+                    checkOut();
+                break;
+
+                default:
+                    System.out.println("Adeus");
+                    sair = true;
+                break;
+            }
         }
     }
 
     public static void cadastrarHospede(){
 
-        int cod, numberPhone;
-        String name;
+        int cod;
+        String name, numberPhone;
         System.out.println("CADASTRO DE HOSPEDE");
         System.out.println("Codigo:");
         cod = Integer.parseInt(Console.readLine());
@@ -53,9 +72,9 @@ public class Main {
         name = Console.readLine();
 
         System.out.println("Numero de contato:");
-        numberPhone = Integer.parseInt(Console.readLine());
+        numberPhone = Console.readLine();
 
-        hospedes[numHospedes].cadastraHospede(name,numberPhone,cod);
+        hospedes[numHospedes] = new Hospede(name,numberPhone,cod);
         numHospedes++;
     }
 
@@ -91,8 +110,13 @@ public class Main {
         boolean validade = false;
 
         if(apartments[codApartament].validaData(dateEntry,dateOut) == true && apartments[codApartament].validaHospedes(numberHospedes) == true){
-            System.out.println("Validação confirmada");
-            validade = true;
+            if(codApartament <= 10) {
+                System.out.println("CheckIn confirmado!");
+                validade = true;
+            }else{
+                System.out.println("Falha no CheckIn, confira os dados e tente novamente");
+                validade = false;
+            }
         }else{
             System.out.println("Validação negada");
             validade = false;
@@ -107,5 +131,26 @@ public class Main {
             apartments[i] = new Apartment();
 
         }
+    }
+
+    public static void checkOut(){
+
+      // DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        int codApartmet;
+
+        System.out.println("Codigo do Apartameto: ");
+        codApartmet = Integer.parseInt(Console.readLine());
+
+        //Converte Date->String->DateTime
+
+        String dateEntry = apartments[codApartmet].getDate(1);
+        String dateOut = apartments[codApartmet].getDate(0);
+
+
+
+        DateTime auxDateEntry = new DateTime();
+        DateTime auxDateOut = new DateTime();
+
+       // Days dias = Days.daysBetween(data1,data2);
     }
 }

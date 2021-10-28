@@ -15,7 +15,7 @@ public class Apartment {
     Date [] entryDates =  new Date[TAM_DATAS];
     Date [] outDates =  new Date[TAM_DATAS];
     private int numDates = 0;
-    private ParsePosition position = new ParsePosition(0);
+    public ParsePosition position = new ParsePosition(0);
     private Random aleatorio = new Random();
 
     public Apartment(){
@@ -65,6 +65,12 @@ public class Apartment {
         auxDate = dateFormat.format(dataAtual);
         dataAtual = dateFormat.parse(auxDate, position);
 
+
+        if(dateEntry.after(dateOut)){
+            validade = true;
+            return validade;
+        }
+
         // Verifica a possibilidade da data
         for (int i = 0; i < numDates; i++) {
 
@@ -102,7 +108,8 @@ public class Apartment {
                 validade = false;
                 return validade;  // se a data de entrada ou saida ja passou da data atual
             }
-        }
+
+        } // fim do laço
         return validade;
     }
 
@@ -122,5 +129,28 @@ public class Apartment {
         }else {
             return false;
         }
+    }
+
+    public String getDate(int tip) {
+        String date ="";
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String auxDate;
+
+        // Pega hora atual
+        Date dataAtual = new Date(System.currentTimeMillis());
+        auxDate = dateFormat.format(dataAtual);
+        dataAtual = dateFormat.parse(auxDate, position);
+
+
+        for (int i = 0; i < this.numDates; i++){
+
+            if(dataAtual.before(entryDates[i]) && dataAtual.after(outDates[i]) && tip == 1){
+                date = dateFormat.format(entryDates[i]); // Recebe converte para string data de entrada se o tipo for 1
+
+            }else if(dataAtual.before(entryDates[i]) && dataAtual.after(outDates[i]) && tip == 0){
+                date = dateFormat.format(outDates[i]); // Recebe e converte para string data de saida se o tipo for 0
+            }
+        }
+        return date;
     }
 }
