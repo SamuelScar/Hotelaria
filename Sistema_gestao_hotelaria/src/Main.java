@@ -1,13 +1,5 @@
-import org.joda.time.DateTime;
-import org.joda.time.Days;
-import org.joda.time.Period;
-
-import java.text.ParseException;
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
-import java.text.DateFormat;
-import java.util.Date;
-
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class Main {
 
@@ -20,10 +12,15 @@ public class Main {
     private static Apartment[] apartments = new Apartment[NUM_APART];
     private static int numApartments = 0;
 
+    private static String dateFormat = "dd/MM/yyyy";
+
     private static SimpleDateFormat simpleDate = new SimpleDateFormat("dd/MM/yyyy");
     private static ParsePosition position = new ParsePosition(0);
 
+
 //-----------------------------------------------------------MAIN----------------------------------------------------//
+
+
     public static void main(String[] args) throws ParseException {
 
         criaApartamentos();
@@ -60,6 +57,21 @@ public class Main {
         }
     }
 
+
+//------------------------------------------------------INICIALIZAÇÃO--------------------------------------------------//
+
+
+    public static void criaApartamentos(){
+
+        for(int i = 0; i < NUM_APART; i++){
+
+            apartments[i] = new Apartment();
+
+        }
+    }
+
+
+//-------------------------------------------------------FUNÇÕES-------------------------------------------------------//
     public static void cadastrarHospede(){
 
         int cod;
@@ -81,7 +93,7 @@ public class Main {
     public static void checkIn(){
 
         int codClient, codApartament, numberHospedes, previsaoSaida, i=0;
-
+        String auxDate = "";
         System.out.println("Codigo do Cliente: ");
         codClient = Integer.parseInt(Console.readLine());
 
@@ -89,16 +101,15 @@ public class Main {
         codApartament = Integer.parseInt(Console.readLine());
 
         System.out.println("Data de entrada (format _/_/_): ");
-        String auxDateEntry = Console.readLine();
-        Date dateEntry = simpleDate.parse(auxDateEntry,position);
-        position.setIndex(0);
-        System.out.println(dateEntry);
+        auxDate = Console.readLine();
+        LocalDate dateEntry = LocalDate.parse(auxDate , DateTimeFormatter.ofPattern(dateFormat));
 
 
         System.out.println("Data de saida (format _/_/_): ");
-        String auxDateOut = Console.readLine();
-        Date dateOut = simpleDate.parse(auxDateOut, position);
+        auxDate = Console.readLine();
+        LocalDate dateOut = LocalDate.parse(auxDate , DateTimeFormatter.ofPattern(dateFormat));
 
+        System.out.println("O numero de vagas para este quarto é"+apartments[codApartament].getCapacity);
         System.out.println("Numero de hospedes: ");
         numberHospedes = Integer.parseInt(Console.readLine());
 
@@ -124,14 +135,7 @@ public class Main {
         return validade;
     }
 
-    public static void criaApartamentos(){
 
-        for(int i = 0; i < NUM_APART; i++){
-
-            apartments[i] = new Apartment();
-
-        }
-    }
 
     public static void checkOut(){
 
