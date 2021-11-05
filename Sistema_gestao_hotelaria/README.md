@@ -1,1 +1,1 @@
-Sistema de gestão de Hotelaria teste 1
+Sistema de gestão de Hotelaria
