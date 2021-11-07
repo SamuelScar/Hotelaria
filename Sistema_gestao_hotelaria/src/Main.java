@@ -1,5 +1,10 @@
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+
 
 public class Main {
 
@@ -12,18 +17,17 @@ public class Main {
     private static Apartment[] apartments = new Apartment[NUM_APART];
     private static int numApartments = 0;
 
+    private static CheckIn checkIn = new CheckIn();
+
+    private static String BASEPATH = "datas";
     private static String dateFormat = "dd/MM/yyyy";
-
-    private static SimpleDateFormat simpleDate = new SimpleDateFormat("dd/MM/yyyy");
-    private static ParsePosition position = new ParsePosition(0);
-
 
 //-----------------------------------------------------------MAIN----------------------------------------------------//
 
 
-    public static void main(String[] args) throws ParseException {
+    public static void main(String[] args) {
 
-        criaApartamentos();
+        inicializar();
 
         boolean sair = false;
 
@@ -46,7 +50,7 @@ public class Main {
                 break;
 
                 case 3:
-                    checkOut();
+                    //checkOut();
                 break;
 
                 default:
@@ -58,20 +62,47 @@ public class Main {
     }
 
 
-//------------------------------------------------------INICIALIZAÇÃO--------------------------------------------------//
+//-----------------------------------------------FUNÇÕES_DE_INICIALIZAÇÃO----------------------------------------------//
 
+
+    public static void inicializar(){
+
+        removeDiretorio();
+        inicializaDiretorio();
+        criaApartamentos();
+    }
+
+
+    public static void removeDiretorio(){
+
+        try {
+
+            FileUtils.deleteDirectory(new File(BASEPATH));
+
+        } catch (Exception e) {
+            System.out.println("Erro: " + e.getMessage());
+        }
+
+    }
+
+
+    public static void inicializaDiretorio(){
+
+        new File(BASEPATH).mkdir();
+
+    }
 
     public static void criaApartamentos(){
 
         for(int i = 0; i < NUM_APART; i++){
 
-            apartments[i] = new Apartment();
+            apartments[i] = new Apartment(i);
 
         }
     }
 
 
-//-------------------------------------------------------FUNÇÕES-------------------------------------------------------//
+//-----------------------------------------------FUNÇÕES_PRINCIPAIS----------------------------------------------------//
     public static void cadastrarHospede(){
 
         int cod;
@@ -92,8 +123,9 @@ public class Main {
 
     public static void checkIn(){
 
-        int codClient, codApartament, numberHospedes, previsaoSaida, i=0;
+        int codClient, codApartament, quantidadeClientes;
         String auxDate = "";
+
         System.out.println("Codigo do Cliente: ");
         codClient = Integer.parseInt(Console.readLine());
 
@@ -104,57 +136,34 @@ public class Main {
         auxDate = Console.readLine();
         LocalDate dateEntry = LocalDate.parse(auxDate , DateTimeFormatter.ofPattern(dateFormat));
 
-
         System.out.println("Data de saida (format _/_/_): ");
         auxDate = Console.readLine();
         LocalDate dateOut = LocalDate.parse(auxDate , DateTimeFormatter.ofPattern(dateFormat));
 
-        System.out.println("O numero de vagas para este quarto é"+apartments[codApartament].getCapacity);
+        System.out.println("O numero de vagas para este quarto é %d" + apartments[codApartament].getCapacity());
         System.out.println("Numero de hospedes: ");
-        numberHospedes = Integer.parseInt(Console.readLine());
+        quantidadeClientes = Integer.parseInt(Console.readLine());
 
-        // Falta validar o periodo minimo de 1 dia
-        validarCheckIn(codClient,codApartament,dateEntry,dateOut,numberHospedes);
     }
 
-    public static boolean validarCheckIn(int codClient, int codApartament, Date dateEntry, Date dateOut, int numberHospedes){
-        boolean validade = false;
-
-        if(apartments[codApartament].validaData(dateEntry,dateOut) == true && apartments[codApartament].validaHospedes(numberHospedes) == true){
-            if(codApartament <= 10) {
-                System.out.println("CheckIn confirmado!");
-                validade = true;
-            }else{
-                System.out.println("Falha no CheckIn, confira os dados e tente novamente");
-                validade = false;
-            }
-        }else{
-            System.out.println("Validação negada");
-            validade = false;
-        }
-        return validade;
-    }
-
-
-
-    public static void checkOut(){
-
-      // DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        int codApartmet;
-
-        System.out.println("Codigo do Apartameto: ");
-        codApartmet = Integer.parseInt(Console.readLine());
-
-        //Converte Date->String->DateTime
-
-        String dateEntry = apartments[codApartmet].getDate(1);
-        String dateOut = apartments[codApartmet].getDate(0);
-
-
-
-        DateTime auxDateEntry = new DateTime();
-        DateTime auxDateOut = new DateTime();
-
-       // Days dias = Days.daysBetween(data1,data2);
-    }
+//    public static void checkOut(){
+//
+//      // DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+//        int codApartmet;
+//
+//        System.out.println("Codigo do Apartameto: ");
+//        codApartmet = Integer.parseInt(Console.readLine());
+//
+//        //Converte Date->String->DateTime
+//
+//        String dateEntry = apartments[codApartmet].getDate(1);
+//        String dateOut = apartments[codApartmet].getDate(0);
+//
+//
+//
+//        DateTime auxDateEntry = new DateTime();
+//        DateTime auxDateOut = new DateTime();
+//
+//       // Days dias = Days.daysBetween(data1,data2);
+//    }
 }
