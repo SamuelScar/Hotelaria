@@ -1,9 +1,9 @@
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 
 public class Main {
@@ -17,9 +17,10 @@ public class Main {
     private static Apartment[] apartments = new Apartment[NUM_APART];
     private static int numApartments = 0;
 
-    private static CheckIn checkIn = new CheckIn();
+    private static Render render = new Render();
+    private static Check check = new Check();
 
-    private static String BASEPATH = "datas";
+    //private static String BASEPATH = "datas";
     private static String dateFormat = "dd/MM/yyyy";
 
 //-----------------------------------------------------------MAIN----------------------------------------------------//
@@ -55,6 +56,7 @@ public class Main {
 
                 default:
                     System.out.println("Adeus");
+                    removeArquivos();
                     sair = true;
                 break;
             }
@@ -67,30 +69,34 @@ public class Main {
 
     public static void inicializar(){
 
-        removeDiretorio();
-        inicializaDiretorio();
+        removeArquivos();
+        //inicializaDiretorio();
         criaApartamentos();
     }
 
 
-    public static void removeDiretorio(){
+    public static void removeArquivos(){
 
-        try {
+        for(int i = 0; i < 10; i++) {
 
-            FileUtils.deleteDirectory(new File(BASEPATH));
+            try {
 
-        } catch (Exception e) {
-            System.out.println("Erro: " + e.getMessage());
+                File file = new File("data"+i+".txt");
+                file.delete();
+
+            } catch (Exception e) {
+                System.out.println("Erro: " + e.getMessage());
+            }
         }
 
     }
 
 
-    public static void inicializaDiretorio(){
-
-        new File(BASEPATH).mkdir();
-
-    }
+//    public static void inicializaDiretorio(){
+//
+//        new File(BASEPATH).mkdir();
+//
+//    }
 
     public static void criaApartamentos(){
 
@@ -123,14 +129,14 @@ public class Main {
 
     public static void checkIn(){
 
-        int codClient, codApartament, quantidadeClientes;
+        int codClient, codApartment, quantidadeClientes;
         String auxDate = "";
 
         System.out.println("Codigo do Cliente: ");
         codClient = Integer.parseInt(Console.readLine());
 
         System.out.println("Codigo do Apartamento: ");
-        codApartament = Integer.parseInt(Console.readLine());
+        codApartment = Integer.parseInt(Console.readLine());
 
         System.out.println("Data de entrada (format _/_/_): ");
         auxDate = Console.readLine();
@@ -140,30 +146,34 @@ public class Main {
         auxDate = Console.readLine();
         LocalDate dateOut = LocalDate.parse(auxDate , DateTimeFormatter.ofPattern(dateFormat));
 
-        System.out.println("O numero de vagas para este quarto é %d" + apartments[codApartament].getCapacity());
+        System.out.println("O numero de vagas para este quarto é " + apartments[codApartment].getCapacity());
         System.out.println("Numero de hospedes: ");
         quantidadeClientes = Integer.parseInt(Console.readLine());
 
+        check.in(dateEntry,dateOut,apartments[codApartment].getCapacity(),quantidadeClientes,apartments[codApartment].getFile(),codClient);
     }
 
-//    public static void checkOut(){
+    public static void checkOut(){
+
+        int codApartment, cliente, estadia;
+
+        System.out.println("Codigo do apartamento: ");
+        codApartment = Integer.parseInt(Console.readLine());
+
+        estadia = check.tempoEstadia(apartments[codApartment].getFile());
+        cliente = check.recebeCliente(apartments[codApartment].getFile());
+
+//        long diarias = ChronoUnit.DAYS.between(dateEntry, dateOut);
 //
-//      // DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-//        int codApartmet;
-//
-//        System.out.println("Codigo do Apartameto: ");
-//        codApartmet = Integer.parseInt(Console.readLine());
-//
-//        //Converte Date->String->DateTime
-//
-//        String dateEntry = apartments[codApartmet].getDate(1);
-//        String dateOut = apartments[codApartmet].getDate(0);
-//
-//
-//
-//        DateTime auxDateEntry = new DateTime();
-//        DateTime auxDateOut = new DateTime();
-//
-//       // Days dias = Days.daysBetween(data1,data2);
-//    }
+//        render.renderCheckOutEstadia(hospedes[cliente].getName(),
+//                hospedes[cliente].getCod(),codApartment,
+//                apartments[codApartment].getTip(),
+//                apartments[codApartment].getVrDiaria(),
+//                dateEntry,
+//                dateOut,
+//                apartments[codApartment].getNumberHospedes(),
+//                vrTotal,
+//                diarias);
+
+    }
 }

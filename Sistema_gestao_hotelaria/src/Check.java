@@ -1,23 +1,117 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
-public class CheckIn {
+public class Check {
 
-    private static String BASEPATH = "dates/";
+    //private static String BASEPATH = "dates/";
     private FileWriter fileWriter;
     private FileReader fileReader;
     private BufferedReader bufferedReader;
-    private String dateFormat = "dd/MM/yyyy";
+    private final String dateFormat = "dd/MM/yyyy";
 
 
-    public CheckIn(){}
+    public Check(){}
 
-    public boolean validaCheckIn(LocalDate dateEntry, LocalDate dateOut, int capacidadeQuarto, int quantidadeClientes, String fileDates,int codCliente){
+
+    public int codCliente(String fileDates){
+
+        int cliente = 0;
+        String linha = "";
+        LocalDate dataAtual = LocalDate.now();
+
+        // ABRINDO ARQUIVO DE DATAS PARA LEITURA
+        try {
+
+            fileReader = new FileReader(fileDates);
+            bufferedReader = new BufferedReader(fileReader);
+            linha = bufferedReader.readLine();
+
+        }catch (Exception e){
+            System.out.println("Erro: " + e.getMessage());
+        }
+
+        while(linha != null){
+
+            LocalDate auxDateOut = recebeDataArquivo(linha , 1);
+
+            if(auxDateOut.equals(dataAtual)){
+
+                cliente = recebeCliente(linha);
+
+            }
+
+            try {
+                linha = bufferedReader.readLine();
+            } catch (Exception e) {
+                System.out.println("Erro: " + e.getMessage());
+            }
+        }
+
+        return cliente;
+    }
+
+    public int tempoEstadia(String fileDates){
+
+        int estadia = 0, cliente;
+        String linha = "";
+        LocalDate dataAtual = LocalDate.now();
+
+        // ABRINDO ARQUIVO DE DATAS PARA LEITURA
+        try {
+
+            fileReader = new FileReader(fileDates);
+            bufferedReader = new BufferedReader(fileReader);
+            linha = bufferedReader.readLine();
+
+        }catch (Exception e){
+            System.out.println("Erro: " + e.getMessage());
+        }
+
+        while(linha != null){
+
+            LocalDate auxDateOut = recebeDataArquivo(linha , 1);
+
+            if(auxDateOut.equals(dataAtual)){
+
+                //cliente = recebeCliente(linha);
+                LocalDate auxDateEntry = recebeDataArquivo(linha , 0);
+                estadia = (int) contaDias(auxDateEntry, auxDateOut);
+                // FAZER MELHORIA DE PERFORMANCE NA PESQUISA
+            }
+
+            try {
+                linha = bufferedReader.readLine();
+            } catch (Exception e) {
+                System.out.println("Erro: " + e.getMessage());
+            }
+        }
+        return estadia;
+    }
+
+
+    public int recebeCliente(String linha){
+
+        String array[];
+        array = linha.split(";");
+
+        int cliente = Integer.parseInt(array[2]);
+        return cliente;
+    }
+
+    public long contaDias(LocalDate dateEntry, LocalDate dateOut){
+
+        long diferencaDias = ChronoUnit.DAYS.between(dateEntry, dateOut);
+
+        return diferencaDias;
+
+    }
+//------------------------------------------------------------CHECK_IN--------------------------------------------------//
+
+    public void in(LocalDate dateEntry, LocalDate dateOut, int capacidadeQuarto, int quantidadeClientes, String fileDates,int codCliente){
 
         boolean validade = true;
 
@@ -31,7 +125,7 @@ public class CheckIn {
             validade = false;
 
         }
-        if( validade == true ){
+        if( validade ){
 
             try {
 
@@ -39,13 +133,15 @@ public class CheckIn {
                 respostaValidade(validade);
 
             }catch (Exception e){
-                validade = false;
                 System.out.println("Erro: " + e.getMessage());
+                validade = false;
             }
+
+        }else{
+            respostaValidade(validade);
 
         }
 
-        return validade;
     }
 
 
@@ -56,6 +152,13 @@ public class CheckIn {
         LocalDate dataAtual = LocalDate.now();
 
         if(dateEntry.isAfter(dateOut)){
+
+            validade = false;
+            return validade;
+
+        }
+
+        if(dateEntry.isBefore(dataAtual)){
 
             validade = false;
             return validade;
@@ -110,16 +213,10 @@ public class CheckIn {
 
     private boolean validaPeriodoMinimo(LocalDate dateEntry, LocalDate dateOut){
 
-        boolean validade = true;
+        boolean validade;
         long diferencaDias = ChronoUnit.DAYS.between(dateEntry, dateOut);
 
-        if(diferencaDias >= 1){
-            validade = true;
-
-        }else{
-         validade = false;
-
-        }
+        validade = diferencaDias >= 1;
 
         return validade;
     }
@@ -127,18 +224,14 @@ public class CheckIn {
 
     private boolean validaCapacidadeQuarto(int capacidade, int clientes) {
 
-        if (clientes > capacidade + 1){
-           return false;
-        }else{
-            return true;
-        }
+        return clientes <= capacidade + 1;
 
     }
 
 
     private void respostaValidade(boolean validade){
 
-        if(validade == true){
+        if(validade){
             System.out.println("Check In executado com sucesso");
         }else{
             System.out.println("Falha no Check In");
@@ -152,9 +245,9 @@ public class CheckIn {
 
         try {
 
-            fileWriter = new FileWriter(fileDates,true);
-            fileWriter.write(line + "\n");
-            fileWriter.close();
+            this.fileWriter = new FileWriter(fileDates,true);
+            this.fileWriter.write(line + "\n");
+            this.fileWriter.close();
 
         }catch (Exception e){
             System.out.println("Erro: " + e.getMessage());
@@ -163,10 +256,10 @@ public class CheckIn {
     }
 
     //-----------------------------------------------FUNÇÕES_AUXILIARES-----------------------------------------------//
-    private LocalDate recebeDataArquivo(String line ,int flag){
+    private LocalDate recebeDataArquivo(String line ,int flag){  // FLAG 0 = Data de Entrada | FLAG 1 = Data de Saida
 
         LocalDate data;
-        String array[] = new String[3];
+        String array[];
 
         array = line.split(";");
 

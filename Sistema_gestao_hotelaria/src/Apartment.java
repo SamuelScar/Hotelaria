@@ -3,12 +3,13 @@ import java.util.Random;
 
 public class Apartment {
 
-    private String BASEPATH = "dates";
+    //private String BASEPATH = "dates";
     final int TAM_DATAS = 100;
     private int vrDiaria;
     private int cod;
     private int tip;
     private int capacity;
+    private int numberHospedes;
     private boolean occupation;
     private int numDates = 0;
     private String file;
@@ -22,7 +23,7 @@ public class Apartment {
 
         try{
 
-            FileWriter fileWriter = new FileWriter(BASEPATH+this.file);
+            FileWriter fileWriter = new FileWriter(this.file);
             fileWriter.close();
 
         }catch (Exception e){
@@ -52,50 +53,23 @@ public class Apartment {
         }
     }
 
+    public int getTip() {
+        return tip;
+    }
 
-//
-//    private void armazenaData(Date dateEntry,Date dateOut){
-//
-//        entryDates[numDates] = dateEntry;
-//        outDates[numDates] = dateOut;
-//        Arrays.sort(entryDates);
-//        Arrays.sort(outDates);
+    public int getVrDiaria() {
+        return vrDiaria;
+    }
+
+
+    public int getNumberHospedes() {
+        return numberHospedes;
+    }
+
+//    public int calculaEstadia(){
 //
 //    }
 //
-//    public boolean validaHospedes(int numHopedes){
-//
-//        if(numHopedes <= this.capacity+1){
-//            return true;
-//        }else {
-//            return false;
-//        }
-//    }
-//
-//    public String getDate(int tip) {
-//        String date ="";
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-//        String auxDate;
-//
-//        // Pega hora atual
-//        Date dataAtual = new Date(System.currentTimeMillis());
-//        auxDate = dateFormat.format(dataAtual);
-//        dataAtual = dateFormat.parse(auxDate, position);
-//
-//
-//        for (int i = 0; i < this.numDates; i++){
-//
-//            if(dataAtual.before(entryDates[i]) && dataAtual.after(outDates[i]) && tip == 1){
-//                date = dateFormat.format(entryDates[i]); // Recebe converte para string data de entrada se o tipo for 1
-//
-//            }else if(dataAtual.before(entryDates[i]) && dataAtual.after(outDates[i]) && tip == 0){
-//                date = dateFormat.format(outDates[i]); // Recebe e converte para string data de saida se o tipo for 0
-//            }
-//        }
-//        return date;
-//    }
-
-
     public int getCapacity() {
         return this.capacity;
     }

@@ -3,6 +3,9 @@ import java.util.Date;
 class Hospede { // arrumar nome do hospede
 
     final int TAM_DATAS = 100;
+
+
+
     private int cod;
     private String name;
     private String phone;
@@ -18,5 +21,11 @@ class Hospede { // arrumar nome do hospede
 
     }
 
+    public String getName() {
+        return name;
+    }
 
+    public int getCod() {
+        return cod;
+    }
 }
