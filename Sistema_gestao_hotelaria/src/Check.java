@@ -111,11 +111,11 @@ public class Check {
     }
 //------------------------------------------------------------CHECK_IN--------------------------------------------------//
 
-    public void in(LocalDate dateEntry, LocalDate dateOut, int capacidadeQuarto, int quantidadeClientes, String fileDates,int codCliente){
+    public void in(LocalDate dateEntry, LocalDate dateOut, int capacidadeQuarto, int quantidadeClientes, String fileApartment,String fileHospede,int codCliente){
 
         boolean validade = true;
 
-        if( !(this.validaData(dateEntry, dateOut , fileDates)) ){
+        if( !(this.validaData(dateEntry, dateOut , fileApartment)) ){
             validade = false;
 
         }else if( !(validaPeriodoMinimo(dateEntry, dateOut)) ){
@@ -129,7 +129,8 @@ public class Check {
 
             try {
 
-                registraData(dateEntry,dateOut,fileDates,codCliente);
+                registraData(dateEntry,dateOut,fileApartment,codCliente);
+                registraData(dateEntry,dateOut,fileHospede,codCliente);
                 respostaValidade(validade);
 
             }catch (Exception e){

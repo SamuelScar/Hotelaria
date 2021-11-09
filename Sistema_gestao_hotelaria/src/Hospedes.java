@@ -1,17 +1,14 @@
+import java.io.FileWriter;
 import java.util.Date;
 
 class Hospede { // arrumar nome do hospede
 
-    final int TAM_DATAS = 100;
-
-
-
     private int cod;
     private String name;
     private String phone;
-    private Date [] entry_dates =  new Date[TAM_DATAS];
-    private Date [] departure_dates =  new Date[TAM_DATAS];
     private int number_dates;
+    private String file;
+
 
     public Hospede(String name, String phone, int cod){
 
@@ -19,13 +16,25 @@ class Hospede { // arrumar nome do hospede
         this.name = name;
         this.phone = phone;
 
+        // FAZER VERIFICAÇÃO SE CLIENTE JA NAO EXISTE
+        this.file = "cliente"+cod+".txt";
+
+        try{
+
+            FileWriter fileWriter = new FileWriter(this.file);
+            fileWriter.close();
+
+        }catch (Exception e){
+            System.out.println("Erro: " + e.getMessage());
+        }
+
     }
 
-    public String getName() {
-        return name;
+    public String getFile() {
+        return this.file;
     }
-
+    public String getPhone() { return this.phone; }
     public int getCod() {
-        return cod;
+        return this.cod;
     }
 }

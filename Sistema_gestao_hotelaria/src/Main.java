@@ -12,7 +12,7 @@ public class Main {
     final static int NUM_APART = 10;
 
     private static Hospede[] hospedes = new Hospede[NUM_HOSP];
-    private static int numHospedes = 0;
+    private static int numHospedes = 1;
 
     private static Apartment[] apartments = new Apartment[NUM_APART];
     private static int numApartments = 0;
@@ -56,7 +56,7 @@ public class Main {
 
                 default:
                     System.out.println("Adeus");
-                    removeArquivos();
+                    removeArquivosDatas();
                     sair = true;
                 break;
             }
@@ -76,6 +76,35 @@ public class Main {
 
 
     public static void removeArquivos(){
+
+        removeArquivosDatas();
+        removeArquivosClientes();
+
+    }
+
+
+    public static void removeArquivosClientes(){
+
+        for(int i = 0; i < 100; i++){
+
+            try {
+
+                File file = new File("cliente"+i+".txt");
+
+                if(file.isFile()){
+                    file.delete();
+                }
+
+            } catch (Exception e) {
+                System.out.println("Erro: " + e.getMessage());
+            }
+
+        }
+
+    }
+
+
+    public static void removeArquivosDatas(){
 
         for(int i = 0; i < 10; i++) {
 
@@ -108,7 +137,11 @@ public class Main {
     }
 
 
+
 //-----------------------------------------------FUNÇÕES_PRINCIPAIS----------------------------------------------------//
+
+
+
     public static void cadastrarHospede(){
 
         int cod;
@@ -123,8 +156,8 @@ public class Main {
         System.out.println("Numero de contato:");
         numberPhone = Console.readLine();
 
-        hospedes[numHospedes] = new Hospede(name,numberPhone,cod);
-        numHospedes++;
+        hospedes[cod] = new Hospede(name,numberPhone,cod);
+        //numHospedes++;
     }
 
     public static void checkIn(){
@@ -150,7 +183,12 @@ public class Main {
         System.out.println("Numero de hospedes: ");
         quantidadeClientes = Integer.parseInt(Console.readLine());
 
-        check.in(dateEntry,dateOut,apartments[codApartment].getCapacity(),quantidadeClientes,apartments[codApartment].getFile(),codClient);
+        check.in(dateEntry,
+                dateOut,
+                apartments[codApartment].getCapacity(),
+                quantidadeClientes,
+                apartments[codApartment].getFile(),
+                hospedes[codClient].getFile(),codClient);
     }
 
     public static void checkOut(){
