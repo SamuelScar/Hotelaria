@@ -4,7 +4,6 @@ import java.util.Random;
 public class Apartment {
 
     //private String BASEPATH = "dates";
-    final int TAM_DATAS = 100;
     private int vrDiaria;
     private int cod;
     private int tip;
@@ -15,66 +14,62 @@ public class Apartment {
     private String file;
     private Random aleatorio = new Random();
 
-    public Apartment(int i){
+    public Apartment(int i) {
 
         this.tip = aleatorio.nextInt(4) + 1;
         this.occupation = false;
-        this.file = "data"+i+".txt";
-
-        try{
+        this.file = "data" + i + ".txt";
+        this.cod = i;
+        try {
 
             FileWriter fileWriter = new FileWriter(this.file);
             fileWriter.close();
 
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Erro: " + e.getMessage());
         }
 
-        switch (this.tip){
+        switch (this.tip) {
             case 1:
                 this.capacity = 2;
                 this.vrDiaria = 268;
-            break;
+                break;
 
             case 2:
                 this.capacity = 4;
                 this.vrDiaria = 315;
-            break;
+                break;
 
             case 3:
                 this.capacity = 4;
                 this.vrDiaria = 353;
-            break;
+                break;
 
             case 4:
                 this.capacity = 2;
                 this.vrDiaria = 498;
-            break;
+                break;
         }
     }
 
-    public int getTip() {
-        return tip;
+//------------------------------------------------------GETTERS--------------------------------------------------------//
+    public int getTip() { return tip; }
+
+    public int getVrDiaria() { return vrDiaria; }
+
+    public int getNumberHospedes() { return numberHospedes; }
+
+    public int getCapacity() { return this.capacity; }
+
+    public String getFile(){ return this.file; }
+
+
+//------------------------------------------------------SETTERS--------------------------------------------------------//
+
+
+    public void setNumberHospedes(int numberHospedes) {
+        this.numberHospedes = numberHospedes;
     }
 
-    public int getVrDiaria() {
-        return vrDiaria;
-    }
 
-
-    public int getNumberHospedes() {
-        return numberHospedes;
-    }
-
-//    public int calculaEstadia(){
-//
-//    }
-//
-    public int getCapacity() {
-        return this.capacity;
-    }
-
-    public String getFile(){
-        return this.file;
-    }
 }

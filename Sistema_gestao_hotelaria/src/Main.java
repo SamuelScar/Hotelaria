@@ -183,22 +183,30 @@ public class Main {
         System.out.println("Numero de hospedes: ");
         quantidadeClientes = Integer.parseInt(Console.readLine());
 
-        check.in(dateEntry,
+        if(check.in(dateEntry,
                 dateOut,
                 apartments[codApartment].getCapacity(),
                 quantidadeClientes,
                 apartments[codApartment].getFile(),
-                hospedes[codClient].getFile(),codClient);
+                hospedes[codClient].getFile(),codClient)){
+
+            apartments[codApartment].setNumberHospedes(quantidadeClientes);
+
+        }
     }
 
     public static void checkOut(){
 
-        int codApartment, cliente, estadia;
-
+        int codApartment, cliente;
+        float estadia;
         System.out.println("Codigo do apartamento: ");
         codApartment = Integer.parseInt(Console.readLine());
 
-        estadia = check.tempoEstadia(apartments[codApartment].getFile());
+        estadia = check.out(apartments[codApartment].getFile(),
+                apartments[codApartment].getVrDiaria(),
+                apartments[codApartment].getCapacity(),
+                apartments[codApartment].getNumberHospedes());
+
         cliente = check.recebeCliente(apartments[codApartment].getFile());
 
 //        long diarias = ChronoUnit.DAYS.between(dateEntry, dateOut);

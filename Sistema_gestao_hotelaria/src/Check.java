@@ -17,6 +17,19 @@ public class Check {
     public Check(){}
 
 
+    public float out(String file, int vrDiaria, int capacidade, int quantidadeHospedes){
+
+        float dias = (float) tempoEstadia(file);
+        dias *= vrDiaria;
+
+        if (quantidadeHospedes > capacidade){
+            dias *= 1.30;
+        }
+
+        return dias;
+    }
+
+
     public int codCliente(String fileDates){
 
         int cliente = 0;
@@ -77,7 +90,6 @@ public class Check {
 
             if(auxDateOut.equals(dataAtual)){
 
-                //cliente = recebeCliente(linha);
                 LocalDate auxDateEntry = recebeDataArquivo(linha , 0);
                 estadia = (int) contaDias(auxDateEntry, auxDateOut);
                 // FAZER MELHORIA DE PERFORMANCE NA PESQUISA
@@ -111,7 +123,7 @@ public class Check {
     }
 //------------------------------------------------------------CHECK_IN--------------------------------------------------//
 
-    public void in(LocalDate dateEntry, LocalDate dateOut, int capacidadeQuarto, int quantidadeClientes, String fileApartment,String fileHospede,int codCliente){
+    public boolean in(LocalDate dateEntry, LocalDate dateOut, int capacidadeQuarto, int quantidadeClientes, String fileApartment,String fileHospede,int codCliente){
 
         boolean validade = true;
 
@@ -142,6 +154,7 @@ public class Check {
             respostaValidade(validade);
 
         }
+        return validade;
 
     }
 
@@ -256,7 +269,6 @@ public class Check {
 
     }
 
-    //-----------------------------------------------FUNÇÕES_AUXILIARES-----------------------------------------------//
     private LocalDate recebeDataArquivo(String line ,int flag){  // FLAG 0 = Data de Entrada | FLAG 1 = Data de Saida
 
         LocalDate data;
