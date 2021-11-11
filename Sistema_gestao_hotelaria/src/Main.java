@@ -51,7 +51,7 @@ public class Main {
                 break;
 
                 case 3:
-                    //checkOut();
+                    checkOut();
                 break;
 
                 default:
@@ -184,11 +184,11 @@ public class Main {
         quantidadeClientes = Integer.parseInt(Console.readLine());
 
         if(check.in(dateEntry,
-                dateOut,
-                apartments[codApartment].getCapacity(),
-                quantidadeClientes,
-                apartments[codApartment].getFile(),
-                hospedes[codClient].getFile(),codClient)){
+            dateOut,
+            apartments[codApartment].getCapacity(),
+            quantidadeClientes,
+            apartments[codApartment].getFile(),
+            hospedes[codClient].getFile(),codClient)){
 
             apartments[codApartment].setNumberHospedes(quantidadeClientes);
 

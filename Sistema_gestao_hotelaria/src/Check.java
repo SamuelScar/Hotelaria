@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -11,7 +12,7 @@ public class Check {
     private FileWriter fileWriter;
     private FileReader fileReader;
     private BufferedReader bufferedReader;
-    private final String dateFormat = "dd/MM/yyyy";
+    private final String dateFormat = "dd-MM-yyyy";
 
 
     public Check(){}
@@ -100,6 +101,11 @@ public class Check {
             } catch (Exception e) {
                 System.out.println("Erro: " + e.getMessage());
             }
+        }
+        try{
+            fileReader.close();
+        }catch (Exception e){
+            System.out.println("Erro: " + e.getMessage());
         }
         return estadia;
     }
@@ -271,12 +277,11 @@ public class Check {
 
     private LocalDate recebeDataArquivo(String line ,int flag){  // FLAG 0 = Data de Entrada | FLAG 1 = Data de Saida
 
-        LocalDate data;
-        String array[];
+        String recebe,array[];
 
         array = line.split(";");
 
-        data = LocalDate.parse(array[flag] , DateTimeFormatter.ofPattern(this.dateFormat));
+        LocalDate data = LocalDate.parse(array[flag], DateTimeFormatter.ofPattern(this.dateFormat));
 
         return data;
     }

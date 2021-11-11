@@ -20,6 +20,7 @@ public class Apartment {
         this.occupation = false;
         this.file = "data" + i + ".txt";
         this.cod = i;
+
         try {
 
             FileWriter fileWriter = new FileWriter(this.file);
