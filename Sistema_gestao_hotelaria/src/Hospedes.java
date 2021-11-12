@@ -37,4 +37,5 @@ class Hospede { // arrumar nome do hospede
     public int getCod() {
         return this.cod;
     }
+    public String getName() { return this.name; }
 }

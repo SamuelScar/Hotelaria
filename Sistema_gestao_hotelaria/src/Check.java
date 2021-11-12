@@ -1,3 +1,6 @@
+import com.sun.jdi.LocalVariable;
+import com.sun.jdi.request.ExceptionRequest;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -12,8 +15,8 @@ public class Check {
     private FileWriter fileWriter;
     private FileReader fileReader;
     private BufferedReader bufferedReader;
-    private final String dateFormat = "dd-MM-yyyy";
-
+    private final DateTimeFormatter dateFormatEnv =  DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private final DateTimeFormatter dateFormatRecive = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public Check(){}
 
@@ -30,6 +33,51 @@ public class Check {
         return dias;
     }
 
+//    public LocalDate data(String fileDates, int flag){
+//
+//        String linha = "";
+//        LocalDate dataAtual = LocalDate.now();
+//
+//        // ABRINDO ARQUIVO DE DATAS PARA LEITURA
+//        try {
+//
+//            fileReader = new FileReader(fileDates);
+//            bufferedReader = new BufferedReader(fileReader);
+//            linha = bufferedReader.readLine();
+//
+//        }catch (Exception e){
+//            System.out.println("Erro: " + e.getMessage());
+//        }
+//
+//        while(linha != null){
+//
+//            LocalDate auxDateOut = recebeDataArquivo(linha , 1);
+//
+//            if(auxDateOut.equals(dataAtual)){
+//
+//                if(flag == 0){
+//                    LocalDate auxDateEntry = recebeDataArquivo(linha , 0);
+//                    return auxDateEntry
+//
+//                }else if(flag == 1){
+//                    return auxDateOut;
+//
+//                }
+//            }
+//
+//            try {
+//                linha = bufferedReader.readLine();
+//            } catch (Exception e) {
+//                System.out.println("Erro: " + e.getMessage());
+//            }
+//        }
+//        try{
+//            fileReader.close();
+//        }catch (Exception e){
+//            System.out.println("Erro: " + e.getMessage());
+//        }
+//        return dataAtual;
+//    }
 
     public int codCliente(String fileDates){
 
@@ -274,14 +322,12 @@ public class Check {
         }
 
     }
-
+//-----------------------------------------------------------------AMBOS-----------------------------------------------//
     private LocalDate recebeDataArquivo(String line ,int flag){  // FLAG 0 = Data de Entrada | FLAG 1 = Data de Saida
 
         String recebe,array[];
-
         array = line.split(";");
-
-        LocalDate data = LocalDate.parse(array[flag], DateTimeFormatter.ofPattern(this.dateFormat));
+        LocalDate data = LocalDate.parse(array[flag], this.dateFormatRecive);
 
         return data;
     }

@@ -195,7 +195,7 @@ public class Main {
         }
     }
 
-    public static void checkOut(){
+    public static void checkOut() {
 
         int codApartment, cliente;
         float estadia;
@@ -207,19 +207,25 @@ public class Main {
                 apartments[codApartment].getCapacity(),
                 apartments[codApartment].getNumberHospedes());
 
-        cliente = check.recebeCliente(apartments[codApartment].getFile());
+        if (estadia == 0) {
 
-//        long diarias = ChronoUnit.DAYS.between(dateEntry, dateOut);
-//
-//        render.renderCheckOutEstadia(hospedes[cliente].getName(),
-//                hospedes[cliente].getCod(),codApartment,
-//                apartments[codApartment].getTip(),
-//                apartments[codApartment].getVrDiaria(),
-//                dateEntry,
-//                dateOut,
-//                apartments[codApartment].getNumberHospedes(),
-//                vrTotal,
-//                diarias);
+            System.out.println("Data de saida não coincide, tente novamente");
 
+        } else {
+
+            cliente = check.codCliente(apartments[codApartment].getFile());
+
+//            render.renderCheckOutEstadia(hospedes[cliente].getName(),
+//                    hospedes[cliente].getCod(),
+//                    codApartment,
+//                    apartments[codApartment].getTip(),
+//                    apartments[codApartment].getVrDiaria(),
+//                    dateEntry,
+//                    dateOut,
+//                    apartments[codApartment].getNumberHospedes(),
+//                    vrTotal,
+//                    diarias);
+//        }
+        }
     }
 }
