@@ -11,6 +11,8 @@ public class Main {
     final static int NUM_HOSP = 100;
     final static int NUM_APART = 10;
 
+    private static float valorTotal = 0;
+
     private static Hospede[] hospedes = new Hospede[NUM_HOSP];
     private static int numHospedes = 1;
 
@@ -38,6 +40,9 @@ public class Main {
             System.out.println("1 - Cadastrar Cliente");
             System.out.println("2 - Check In");
             System.out.println("3 - Check Out");
+            System.out.println("4 - Consultar Cliente");
+            System.out.println("5 - Consultar Quarto");
+            System.out.println("6 - Relatorio Hotel");
 
             escolha = Integer.parseInt(Console.readLine());
 
@@ -52,6 +57,18 @@ public class Main {
 
                 case 3:
                     checkOut();
+                break;
+
+                case 4:
+                    consultaCliente();
+                break;
+
+                case 5:
+                    consultaQuarto();
+                break;
+
+                case 6:
+                    relatorioHotel();
                 break;
 
                 default:
@@ -214,18 +231,63 @@ public class Main {
         } else {
 
             cliente = check.codCliente(apartments[codApartment].getFile());
+            LocalDate dateEntry = check.data(apartments[codApartment].getFile(),
+                                            hospedes[cliente].getCod(),
+                                            0);
 
-//            render.renderCheckOutEstadia(hospedes[cliente].getName(),
-//                    hospedes[cliente].getCod(),
-//                    codApartment,
-//                    apartments[codApartment].getTip(),
-//                    apartments[codApartment].getVrDiaria(),
-//                    dateEntry,
-//                    dateOut,
-//                    apartments[codApartment].getNumberHospedes(),
-//                    vrTotal,
-//                    diarias);
-//        }
+            LocalDate dateOut = check.data(apartments[codApartment].getFile(),
+                                            hospedes[cliente].getCod(),
+                                            1);
+
+            long diarias = ChronoUnit.DAYS.between(dateEntry, dateOut);
+
+
+            render.renderCheckOutEstadia(hospedes[cliente].getName(),
+                    hospedes[cliente].getCod(),
+                    codApartment,
+                    apartments[codApartment].getTip(),
+                    apartments[codApartment].getVrDiaria(),
+                    dateEntry,
+                    dateOut,
+                    apartments[codApartment].getNumberHospedes(),
+                    estadia,
+                    diarias);
         }
+
+        valorTotal += estadia;
+
+    }
+
+    public static void consultaCliente(){
+
+        System.out.println("Codigo do cliente: ");
+        int codCliente = Integer.parseInt(Console.readLine());
+
+        render.consultaHospede(hospedes[codCliente].getName(),
+                                hospedes[codCliente].getCod(),
+                                hospedes[codCliente].getPhone(),
+                                hospedes[codCliente].getFile());
+    }
+
+    public static void consultaQuarto(){
+
+        System.out.println("Codigo do quarto: ");
+        int codApartamento = Integer.parseInt(Console.readLine());
+
+        render.consultaQuarto(apartments[codApartamento].getTip(),
+                            apartments[codApartamento].getVrDiaria(),
+                            apartments[codApartamento].getCapacity(),
+                            apartments[codApartamento].getFile(),
+                            check.ocupacaoQuarto(apartments[codApartamento].getFile()));
+
+    }
+
+    public static void relatorioHotel(){
+
+        System.out.println("\nRELATORIO HOTEL\n");
+        System.out.println("Numero de quartos: " + NUM_APART);
+        System.out.println("Numero de quartos ocupados: " + check.quartosOcupados(numApartments));
+        System.out.println("Valor total: " + valorTotal);
+        System.out.println("\n\n");
     }
 }

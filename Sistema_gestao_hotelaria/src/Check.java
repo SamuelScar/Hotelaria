@@ -1,17 +1,12 @@
-import com.sun.jdi.LocalVariable;
-import com.sun.jdi.request.ExceptionRequest;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
 public class Check {
 
-    //private static String BASEPATH = "dates/";
     private FileWriter fileWriter;
     private FileReader fileReader;
     private BufferedReader bufferedReader;
@@ -20,6 +15,113 @@ public class Check {
 
     public Check(){}
 
+
+    public int quartosOcupados(int quartos){
+        int i,ocupados = 0;
+        String ocupacao;
+
+        for (i = 0; i < quartos; i++){
+
+            ocupacao = ocupacaoQuarto("data"+i+".txt");
+
+            if(ocupacao == "ocupado"){
+                ocupados++;
+            }
+        }
+
+        return ocupados;
+    }
+
+    public String ocupacaoQuarto(String file){
+
+        LocalDate agora = LocalDate.now();
+        String linha = "", ocupacao = "";
+        boolean valida = false;
+
+        // ABRINDO ARQUIVO DE DATAS PARA LEITURA
+        try {
+
+            this.fileReader = new FileReader(file);
+            this.bufferedReader = new BufferedReader(this.fileReader);
+            linha = this.bufferedReader.readLine();
+
+        }catch (Exception e){
+            System.out.println("Erro: " + e.getMessage());
+        }
+
+        while(linha != null){
+
+            LocalDate auxDateEntry = recebeDataArquivo(linha , 0);
+            LocalDate auxDateOut = recebeDataArquivo(linha , 1);
+
+            if(agora.isEqual(auxDateEntry) || agora.isEqual(auxDateOut)){
+                valida = true;
+            }else if(agora.isAfter(auxDateEntry) && agora.isBefore(auxDateOut)){
+                valida = true;
+            }
+
+        }
+
+        try{
+            fileReader.close();
+        }catch (Exception e){
+            System.out.println("Erro: " + e.getMessage());
+        }
+
+        if(valida){
+            ocupacao = "ocupado";
+        }else{
+            ocupacao = "desocupado";
+        }
+
+        return ocupacao;
+    }
+
+
+    public LocalDate data(String fileDates,int codCliente, int flag){
+
+        String linha = "";
+        LocalDate dataAtual = LocalDate.now();
+
+        // ABRINDO ARQUIVO DE DATAS PARA LEITURA
+        try {
+
+            fileReader = new FileReader(fileDates);
+            bufferedReader = new BufferedReader(fileReader);
+            linha = bufferedReader.readLine();
+
+        }catch (Exception e){
+            System.out.println("Erro: " + e.getMessage());
+        }
+
+        while(linha != null){
+
+            int cliente = recebeCliente(linha , codCliente);
+
+            if(cliente == codCliente){
+
+                LocalDate auxDate = recebeDataArquivo(linha , flag);
+                return auxDate;
+
+            }else {
+
+                try {
+                    linha = bufferedReader.readLine();
+                } catch (Exception e) {
+                    System.out.println("Erro: " + e.getMessage());
+                }
+
+            }
+        }
+
+        try{
+            fileReader.close();
+        }catch (Exception e){
+            System.out.println("Erro: " + e.getMessage());
+        }
+
+        return dataAtual;
+    }
 
     public float out(String file, int vrDiaria, int capacidade, int quantidadeHospedes){
 
@@ -33,51 +135,6 @@ public class Check {
         return dias;
     }
 
-//    public LocalDate data(String fileDates, int flag){
-//
-//        String linha = "";
-//        LocalDate dataAtual = LocalDate.now();
-//
-//        // ABRINDO ARQUIVO DE DATAS PARA LEITURA
-//        try {
-//
-//            fileReader = new FileReader(fileDates);
-//            bufferedReader = new BufferedReader(fileReader);
-//            linha = bufferedReader.readLine();
-//
-//        }catch (Exception e){
-//            System.out.println("Erro: " + e.getMessage());
-//        }
-//
-//        while(linha != null){
-//
-//            LocalDate auxDateOut = recebeDataArquivo(linha , 1);
-//
-//            if(auxDateOut.equals(dataAtual)){
-//
-//                if(flag == 0){
-//                    LocalDate auxDateEntry = recebeDataArquivo(linha , 0);
-//                    return auxDateEntry
-//
-//                }else if(flag == 1){
-//                    return auxDateOut;
-//
-//                }
-//            }
-//
-//            try {
-//                linha = bufferedReader.readLine();
-//            } catch (Exception e) {
-//                System.out.println("Erro: " + e.getMessage());
-//            }
-//        }
-//        try{
-//            fileReader.close();
-//        }catch (Exception e){
-//            System.out.println("Erro: " + e.getMessage());
-//        }
-//        return dataAtual;
-//    }
 
     public int codCliente(String fileDates){
 
@@ -325,11 +382,20 @@ public class Check {
 //-----------------------------------------------------------------AMBOS-----------------------------------------------//
     private LocalDate recebeDataArquivo(String line ,int flag){  // FLAG 0 = Data de Entrada | FLAG 1 = Data de Saida
 
-        String recebe,array[];
+        String array[];
         array = line.split(";");
         LocalDate data = LocalDate.parse(array[flag], this.dateFormatRecive);
 
         return data;
+    }
+
+    public int recebeCliente(String line, int codCliente){
+
+        String array[];
+        array = line.split(";");
+        int cliente =  Integer.parseInt(array[2]);
+
+        return cliente;
     }
 
 }

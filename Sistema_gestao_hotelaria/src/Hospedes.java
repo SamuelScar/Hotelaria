@@ -30,6 +30,7 @@ class Hospede { // arrumar nome do hospede
 
     }
 
+
     public String getFile() {
         return this.file;
     }
