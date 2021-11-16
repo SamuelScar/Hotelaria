@@ -49,7 +49,7 @@ public class Main {
             switch (escolha) {
                 case 1:
                     cadastrarHospede();
-                    break;
+                break;
 
                 case 2:
                     checkIn();
@@ -163,7 +163,9 @@ public class Main {
 
         int cod;
         String name, numberPhone;
+
         System.out.println("CADASTRO DE HOSPEDE");
+
         System.out.println("Codigo:");
         cod = Integer.parseInt(Console.readLine());
 
@@ -200,17 +202,23 @@ public class Main {
         System.out.println("Numero de hospedes: ");
         quantidadeClientes = Integer.parseInt(Console.readLine());
 
-        if(check.in(dateEntry,
-            dateOut,
-            apartments[codApartment].getCapacity(),
-            quantidadeClientes,
-            apartments[codApartment].getFile(),
-            hospedes[codClient].getFile(),codClient)){
+        try {
+            check.in(dateEntry,
+                    dateOut,
+                    apartments[codApartment].getCapacity(),
+                    quantidadeClientes,
+                    apartments[codApartment].getFile(),
+                    hospedes[codClient].getFile(), codClient);
 
-            apartments[codApartment].setNumberHospedes(quantidadeClientes);
+                apartments[codApartment].setNumberHospedes(quantidadeClientes);
+            System.out.println("Check in realizado com sucesso");
 
+        }catch (RuntimeException e){
+            System.out.println("Falha no check in:");
+            System.out.println(e.getMessage());
         }
     }
+
 
     public static void checkOut() {
 

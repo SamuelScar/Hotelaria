@@ -234,38 +234,27 @@ public class Check {
     }
 //------------------------------------------------------------CHECK_IN--------------------------------------------------//
 
-    public boolean in(LocalDate dateEntry, LocalDate dateOut, int capacidadeQuarto, int quantidadeClientes, String fileApartment,String fileHospede,int codCliente){
+    public void in(LocalDate dateEntry, LocalDate dateOut, int capacidadeQuarto, int quantidadeClientes, String fileApartment,String fileHospede,int codCliente){
 
         boolean validade = true;
 
         if( !(this.validaData(dateEntry, dateOut , fileApartment)) ){
-            validade = false;
+            throw new RuntimeException("Data não disponível para este apartamento, por favor escolha outra");
 
         }else if( !(validaPeriodoMinimo(dateEntry, dateOut)) ){
-            validade =  false;
+            throw new RuntimeException("O periodo minimo deve ser de pelo omenos um dia no hotel");
 
         }else if( !(validaCapacidadeQuarto(capacidadeQuarto , quantidadeClientes)) ){
-            validade = false;
-
+            throw new RuntimeException("A quantidade de clientes não é compativel com a capacidade do quarto");
         }
         if( validade ){
 
-            try {
-
                 registraData(dateEntry,dateOut,fileApartment,codCliente);
                 registraData(dateEntry,dateOut,fileHospede,codCliente);
-                respostaValidade(validade);
-
-            }catch (Exception e){
-                System.out.println("Erro: " + e.getMessage());
-                validade = false;
-            }
 
         }else{
-            respostaValidade(validade);
-
+            throw new RuntimeException("Houve uma falha no registro da data");
         }
-        return validade;
 
     }
 
