@@ -1,12 +1,10 @@
 import java.io.FileWriter;
-import java.util.Date;
 
 class Hospede { // arrumar nome do hospede
 
     private int cod;
     private String name;
     private String phone;
-    private int number_dates;
     private String file;
 
 

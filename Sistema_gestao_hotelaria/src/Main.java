@@ -1,4 +1,3 @@
-import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -14,16 +13,14 @@ public class Main {
     private static float valorTotal = 0;
 
     private static Hospede[] hospedes = new Hospede[NUM_HOSP];
-    private static int numHospedes = 1;
 
     private static Apartment[] apartments = new Apartment[NUM_APART];
     private static int numApartments = 0;
 
-    private static Render render = new Render();
-    private static Check check = new Check();
+    private static final Render render = new Render();
+    private static final Check check = new Check();
 
-    //private static String BASEPATH = "datas";
-    private static String dateFormat = "dd/MM/yyyy";
+    private static final String dateFormat = "dd/MM/yyyy";
 
 //-----------------------------------------------------------MAIN----------------------------------------------------//
 
@@ -34,15 +31,15 @@ public class Main {
 
         boolean sair = false;
 
-        while(sair == false) {
-            int escolha = 1;
+        while(!sair) {
+            int escolha;
 
             System.out.println("1 - Cadastrar Cliente");
             System.out.println("2 - Check In");
             System.out.println("3 - Check Out");
             System.out.println("4 - Consultar Cliente");
             System.out.println("5 - Consultar Quarto");
-            System.out.println("6 - Relatorio Hotel");
+            System.out.println("6 - Relatório Hotel");
 
             escolha = Integer.parseInt(Console.readLine());
 
@@ -87,7 +84,6 @@ public class Main {
     public static void inicializar(){
 
         removeArquivos();
-        //inicializaDiretorio();
         criaApartamentos();
     }
 
@@ -138,12 +134,6 @@ public class Main {
     }
 
 
-//    public static void inicializaDiretorio(){
-//
-//        new File(BASEPATH).mkdir();
-//
-//    }
-
     public static void criaApartamentos(){
 
         for(int i = 0; i < NUM_APART; i++){
@@ -176,13 +166,12 @@ public class Main {
         numberPhone = Console.readLine();
 
         hospedes[cod] = new Hospede(name,numberPhone,cod);
-        //numHospedes++;
     }
 
     public static void checkIn(){
 
         int codClient, codApartment, quantidadeClientes;
-        String auxDate = "";
+        String auxDate;
 
         System.out.println("Codigo do Cliente: ");
         codClient = Integer.parseInt(Console.readLine());
@@ -223,44 +212,41 @@ public class Main {
     public static void checkOut() {
 
         int codApartment, cliente;
-        float estadia;
+        float estadia = 0;
         System.out.println("Codigo do apartamento: ");
         codApartment = Integer.parseInt(Console.readLine());
 
-        estadia = check.out(apartments[codApartment].getFile(),
-                apartments[codApartment].getVrDiaria(),
-                apartments[codApartment].getCapacity(),
-                apartments[codApartment].getNumberHospedes());
-
-        if (estadia == 0) {
-
-            System.out.println("Data de saida não coincide, tente novamente");
-
-        } else {
-
-            cliente = check.codCliente(apartments[codApartment].getFile());
-            LocalDate dateEntry = check.data(apartments[codApartment].getFile(),
-                                            hospedes[cliente].getCod(),
-                                            0);
-
-            LocalDate dateOut = check.data(apartments[codApartment].getFile(),
-                                            hospedes[cliente].getCod(),
-                                            1);
-
-            long diarias = ChronoUnit.DAYS.between(dateEntry, dateOut);
-
-
-            render.renderCheckOutEstadia(hospedes[cliente].getName(),
-                    hospedes[cliente].getCod(),
-                    codApartment,
-                    apartments[codApartment].getTip(),
+        try {
+            estadia = check.out(apartments[codApartment].getFile(),
                     apartments[codApartment].getVrDiaria(),
-                    dateEntry,
-                    dateOut,
-                    apartments[codApartment].getNumberHospedes(),
-                    estadia,
-                    diarias);
+                    apartments[codApartment].getCapacity(),
+                    apartments[codApartment].getNumberHospedes());
+        }catch (RuntimeException e){
+            System.out.println("Falha no check out");
+            System.out.println(e.getMessage());
         }
+
+        cliente = check.codCliente(apartments[codApartment].getFile());
+        LocalDate dateEntry = check.data(apartments[codApartment].getFile(),
+                                        hospedes[cliente].getCod(),
+                                        0);
+
+        LocalDate dateOut = check.data(apartments[codApartment].getFile(),
+                                        hospedes[cliente].getCod(),
+                                        1);
+
+        long diarias = ChronoUnit.DAYS.between(dateEntry, dateOut);
+
+        render.renderCheckOutEstadia(hospedes[cliente].getName(),
+                hospedes[cliente].getCod(),
+                codApartment,
+                apartments[codApartment].getTip(),
+                apartments[codApartment].getVrDiaria(),
+                dateEntry,
+                dateOut,
+                apartments[codApartment].getNumberHospedes(),
+                estadia,
+                diarias);
 
         valorTotal += estadia;
 

@@ -1,17 +1,14 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 public class Render {
 
     private BufferedReader bufferedReader;
     private FileReader fileReader;
-    private final DateTimeFormatter dateFormatRecive = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 
-    public Render(){};
+    public Render(){}
 
     public void renderCheckOutEstadia(String name,
                                       int codClient,
@@ -63,7 +60,8 @@ public class Render {
 
     public void listaHistorico(String file){
 
-        String linha = "", array[];
+        String linha = "";
+        String[] array;
         // ABRINDO ARQUIVO DE DATAS PARA LEITURA
         try {
 
@@ -101,34 +99,13 @@ public class Render {
 
     public String tipoQuarto(int tip){
 
-        String tipoQuarto = "";
-
-        switch (tip){
-
-            case 1:
-                tipoQuarto = "Standard";
-            break;
-            case 2:
-                tipoQuarto = "Apartamento Vista Bosque";
-            break;
-            case 3:
-                tipoQuarto = "Apartamento Vista Vale";
-            break;
-            case 4:
-                tipoQuarto = "Suíte";
-            break;
-
-        }
-
-        return tipoQuarto;
+        return switch (tip) {
+            case 1 -> "Standard";
+            case 2 -> "Apartamento Vista Bosque";
+            case 3 -> "Apartamento Vista Vale";
+            case 4 -> "Suíte";
+            default -> "";
+        };
     }
 
-    private LocalDate recebeDataArquivo(String line ,int flag){  // FLAG 0 = Data de Entrada | FLAG 1 = Data de Saida
-
-        String array[];
-        array = line.split(";");
-        LocalDate data = LocalDate.parse(array[flag], this.dateFormatRecive);
-
-        return data;
-    }
 }

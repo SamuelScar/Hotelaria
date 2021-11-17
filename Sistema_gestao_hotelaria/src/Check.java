@@ -4,13 +4,13 @@ import java.io.FileWriter;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Objects;
 
 public class Check {
 
     private FileWriter fileWriter;
     private FileReader fileReader;
     private BufferedReader bufferedReader;
-    private final DateTimeFormatter dateFormatEnv =  DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private final DateTimeFormatter dateFormatRecive = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public Check(){}
@@ -24,7 +24,7 @@ public class Check {
 
             ocupacao = ocupacaoQuarto("data"+i+".txt");
 
-            if(ocupacao == "ocupado"){
+            if(Objects.equals(ocupacao, "ocupado")){
                 ocupados++;
             }
         }
@@ -35,7 +35,7 @@ public class Check {
     public String ocupacaoQuarto(String file){
 
         LocalDate agora = LocalDate.now();
-        String linha = "", ocupacao = "";
+        String linha = "", ocupacao;
         boolean valida = false;
 
         // ABRINDO ARQUIVO DE DATAS PARA LEITURA
@@ -51,15 +51,19 @@ public class Check {
 
         while(linha != null){
 
-            LocalDate auxDateEntry = recebeDataArquivo(linha , 0);
-            LocalDate auxDateOut = recebeDataArquivo(linha , 1);
+            LocalDate auxDateEntry = recebeParametroLinha(linha , 0);
+            LocalDate auxDateOut = recebeParametroLinha(linha , 1);
 
             if(agora.isEqual(auxDateEntry) || agora.isEqual(auxDateOut)){
                 valida = true;
             }else if(agora.isAfter(auxDateEntry) && agora.isBefore(auxDateOut)){
                 valida = true;
             }
-
+            try {
+                linha = bufferedReader.readLine();
+            } catch (Exception e) {
+                System.out.println("Erro: " + e.getMessage());
+            }
         }
 
         try{
@@ -96,12 +100,11 @@ public class Check {
 
         while(linha != null){
 
-            int cliente = recebeCliente(linha , codCliente);
+            int cliente = recebeParametroLinha(linha);
 
             if(cliente == codCliente){
 
-                LocalDate auxDate = recebeDataArquivo(linha , flag);
-                return auxDate;
+                return recebeParametroLinha(linha , flag);
 
             }else {
 
@@ -126,10 +129,14 @@ public class Check {
     public float out(String file, int vrDiaria, int capacidade, int quantidadeHospedes){
 
         float dias = (float) tempoEstadia(file);
-        dias *= vrDiaria;
+        if(dias <= 0){
+            throw new RuntimeException("Cliente não ativo no Hotel");
+        }else{
+            dias *= vrDiaria;
 
-        if (quantidadeHospedes > capacidade){
-            dias *= 1.30;
+            if (quantidadeHospedes > capacidade){
+                dias *= 1.30;
+            }
         }
 
         return dias;
@@ -155,11 +162,11 @@ public class Check {
 
         while(linha != null){
 
-            LocalDate auxDateOut = recebeDataArquivo(linha , 1);
+            LocalDate auxDateOut = recebeParametroLinha(linha , 1);
 
             if(auxDateOut.equals(dataAtual)){
 
-                cliente = recebeCliente(linha);
+                cliente = recebeParametroLinha(linha);
 
             }
 
@@ -175,7 +182,7 @@ public class Check {
 
     public int tempoEstadia(String fileDates){
 
-        int estadia = 0, cliente;
+        int estadia = 0;
         String linha = "";
         LocalDate dataAtual = LocalDate.now();
 
@@ -192,11 +199,11 @@ public class Check {
 
         while(linha != null){
 
-            LocalDate auxDateOut = recebeDataArquivo(linha , 1);
+            LocalDate auxDateOut = recebeParametroLinha(linha , 1);
 
             if(auxDateOut.equals(dataAtual)){
 
-                LocalDate auxDateEntry = recebeDataArquivo(linha , 0);
+                LocalDate auxDateEntry = recebeParametroLinha(linha , 0);
                 estadia = (int) contaDias(auxDateEntry, auxDateOut);
                 // FAZER MELHORIA DE PERFORMANCE NA PESQUISA
             }
@@ -216,20 +223,17 @@ public class Check {
     }
 
 
-    public int recebeCliente(String linha){
+    public int recebeParametroLinha(String linha){
 
-        String array[];
+        String[] array;
         array = linha.split(";");
 
-        int cliente = Integer.parseInt(array[2]);
-        return cliente;
+        return Integer.parseInt(array[2]);
     }
 
     public long contaDias(LocalDate dateEntry, LocalDate dateOut){
 
-        long diferencaDias = ChronoUnit.DAYS.between(dateEntry, dateOut);
-
-        return diferencaDias;
+        return ChronoUnit.DAYS.between(dateEntry, dateOut);
 
     }
 //------------------------------------------------------------CHECK_IN--------------------------------------------------//
@@ -292,8 +296,8 @@ public class Check {
 
         while (linha != null){
 
-            LocalDate auxDateEntry = recebeDataArquivo(linha , 0);
-            LocalDate auxDateOut = recebeDataArquivo(linha , 1);
+            LocalDate auxDateEntry = recebeParametroLinha(linha , 0);
+            LocalDate auxDateOut = recebeParametroLinha(linha , 1);
 
             if( !(dateEntry.isBefore(auxDateEntry) && dateOut.isBefore(auxDateOut)) ){
 
@@ -342,17 +346,6 @@ public class Check {
 
     }
 
-
-    private void respostaValidade(boolean validade){
-
-        if(validade){
-            System.out.println("Check In executado com sucesso");
-        }else{
-            System.out.println("Falha no Check In");
-        }
-
-    }
-
     private void registraData(LocalDate dateEntry, LocalDate dateOut, String fileDates, int codCliente){
 
         String line = dateEntry +";"+ dateOut +";"+codCliente;
@@ -369,22 +362,12 @@ public class Check {
 
     }
 //-----------------------------------------------------------------AMBOS-----------------------------------------------//
-    private LocalDate recebeDataArquivo(String line ,int flag){  // FLAG 0 = Data de Entrada | FLAG 1 = Data de Saida
+    private LocalDate recebeParametroLinha(String line ,int flag){  // FLAG 0 = Data de Entrada | FLAG 1 = Data de Saida
 
-        String array[];
+        String[] array;
         array = line.split(";");
-        LocalDate data = LocalDate.parse(array[flag], this.dateFormatRecive);
 
-        return data;
-    }
-
-    public int recebeCliente(String line, int codCliente){
-
-        String array[];
-        array = line.split(";");
-        int cliente =  Integer.parseInt(array[2]);
-
-        return cliente;
+        return LocalDate.parse(array[flag], this.dateFormatRecive);
     }
 
 }

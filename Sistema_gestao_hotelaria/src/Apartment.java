@@ -12,10 +12,10 @@ public class Apartment {
     private boolean occupation;
     private int numDates = 0;
     private String file;
-    private Random aleatorio = new Random();
 
     public Apartment(int i) {
 
+        Random aleatorio = new Random();
         this.tip = aleatorio.nextInt(4) + 1;
         this.occupation = false;
         this.file = "data" + i + ".txt";
@@ -31,25 +31,22 @@ public class Apartment {
         }
 
         switch (this.tip) {
-            case 1:
+            case 1 -> {
                 this.capacity = 2;
                 this.vrDiaria = 268;
-                break;
-
-            case 2:
+            }
+            case 2 -> {
                 this.capacity = 4;
                 this.vrDiaria = 315;
-                break;
-
-            case 3:
+            }
+            case 3 -> {
                 this.capacity = 4;
                 this.vrDiaria = 353;
-                break;
-
-            case 4:
+            }
+            case 4 -> {
                 this.capacity = 2;
                 this.vrDiaria = 498;
-                break;
+            }
         }
     }
 
