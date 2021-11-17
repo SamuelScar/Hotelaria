@@ -40,39 +40,23 @@ public class Main {
             System.out.println("4 - Consultar Cliente");
             System.out.println("5 - Consultar Quarto");
             System.out.println("6 - Relatório Hotel");
+            System.out.println("0 - Sair");
 
             escolha = Integer.parseInt(Console.readLine());
 
             switch (escolha) {
-                case 1:
-                    cadastrarHospede();
-                break;
-
-                case 2:
-                    checkIn();
-                break;
-
-                case 3:
-                    checkOut();
-                break;
-
-                case 4:
-                    consultaCliente();
-                break;
-
-                case 5:
-                    consultaQuarto();
-                break;
-
-                case 6:
-                    relatorioHotel();
-                break;
-
-                default:
+                case 0 -> {
+                    sair = true;
                     System.out.println("Adeus");
                     removeArquivosDatas();
-                    sair = true;
-                break;
+                }
+                case 1 -> cadastrarHospede();
+                case 2 -> checkIn();
+                case 3 -> checkOut();
+                case 4 -> consultaCliente();
+                case 5 -> consultaQuarto();
+                case 6 -> relatorioHotel();
+                default -> System.out.println("\nOpção inexistente, selecione outra\n");
             }
         }
     }
@@ -201,10 +185,11 @@ public class Main {
 
                 apartments[codApartment].setNumberHospedes(quantidadeClientes);
             System.out.println("Check in realizado com sucesso");
-
+            System.out.println("\n\n");
         }catch (RuntimeException e){
             System.out.println("Falha no check in:");
             System.out.println(e.getMessage());
+            System.out.println("\n\n");
         }
     }
 
@@ -221,35 +206,38 @@ public class Main {
                     apartments[codApartment].getVrDiaria(),
                     apartments[codApartment].getCapacity(),
                     apartments[codApartment].getNumberHospedes());
+
+            cliente = check.codCliente(apartments[codApartment].getFile());
+
+            LocalDate dateEntry = check.data(apartments[codApartment].getFile(),
+                    hospedes[cliente].getCod(),
+                    0);
+
+            LocalDate dateOut = check.data(apartments[codApartment].getFile(),
+                    hospedes[cliente].getCod(),
+                    1);
+
+            LocalDate dataAtual = LocalDate.now();
+
+            long diarias = ChronoUnit.DAYS.between(dateEntry, dataAtual);
+
+            render.renderCheckOutEstadia(hospedes[cliente].getName(),
+                    hospedes[cliente].getCod(),
+                    codApartment,
+                    apartments[codApartment].getTip(),
+                    apartments[codApartment].getVrDiaria(),
+                    dateEntry,
+                    dateOut,
+                    apartments[codApartment].getNumberHospedes(),
+                    estadia,
+                    diarias);
+
+            valorTotal += estadia;
+
         }catch (RuntimeException e){
             System.out.println("Falha no check out");
             System.out.println(e.getMessage());
         }
-
-        cliente = check.codCliente(apartments[codApartment].getFile());
-        LocalDate dateEntry = check.data(apartments[codApartment].getFile(),
-                                        hospedes[cliente].getCod(),
-                                        0);
-
-        LocalDate dateOut = check.data(apartments[codApartment].getFile(),
-                                        hospedes[cliente].getCod(),
-                                        1);
-
-        long diarias = ChronoUnit.DAYS.between(dateEntry, dateOut);
-
-        render.renderCheckOutEstadia(hospedes[cliente].getName(),
-                hospedes[cliente].getCod(),
-                codApartment,
-                apartments[codApartment].getTip(),
-                apartments[codApartment].getVrDiaria(),
-                dateEntry,
-                dateOut,
-                apartments[codApartment].getNumberHospedes(),
-                estadia,
-                diarias);
-
-        valorTotal += estadia;
-
     }
 
     public static void consultaCliente(){
@@ -257,10 +245,14 @@ public class Main {
         System.out.println("Codigo do cliente: ");
         int codCliente = Integer.parseInt(Console.readLine());
 
-        render.consultaHospede(hospedes[codCliente].getName(),
-                                hospedes[codCliente].getCod(),
-                                hospedes[codCliente].getPhone(),
-                                hospedes[codCliente].getFile());
+        try {
+            render.consultaHospede(hospedes[codCliente].getName(),
+                    hospedes[codCliente].getCod(),
+                    hospedes[codCliente].getPhone(),
+                    hospedes[codCliente].getFile());
+        }catch (RuntimeException e){
+            System.out.println(e.getMessage());
+        }
     }
 
     public static void consultaQuarto(){

@@ -163,8 +163,9 @@ public class Check {
         while(linha != null){
 
             LocalDate auxDateOut = recebeParametroLinha(linha , 1);
+            LocalDate auxDateEntry = recebeParametroLinha(linha , 0);
 
-            if(auxDateOut.equals(dataAtual)){
+            if( (dataAtual.isBefore(auxDateOut) || dataAtual.equals(auxDateOut)) && dataAtual.isAfter(auxDateEntry) ){
 
                 cliente = recebeParametroLinha(linha);
 
@@ -200,11 +201,11 @@ public class Check {
         while(linha != null){
 
             LocalDate auxDateOut = recebeParametroLinha(linha , 1);
+            LocalDate auxDateEntry = recebeParametroLinha(linha , 0);
 
-            if(auxDateOut.equals(dataAtual)){
+            if( (dataAtual.isBefore(auxDateOut) || dataAtual.equals(auxDateOut)) && dataAtual.isAfter(auxDateEntry) ){
 
-                LocalDate auxDateEntry = recebeParametroLinha(linha , 0);
-                estadia = (int) contaDias(auxDateEntry, auxDateOut);
+                estadia = (int) contaDias(auxDateEntry, dataAtual);
                 // FAZER MELHORIA DE PERFORMANCE NA PESQUISA
             }
 
